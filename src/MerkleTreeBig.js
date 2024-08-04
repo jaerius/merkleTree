@@ -7,11 +7,35 @@ export default class MerkleTreeBig {
   - leaves 속성에는 입력 받은 leaves 배열을 할당해주세요.
   - hash 속성에는 입력 받은 concat 함수를 할당해주세요.
   */
-  constructor(leaves, concat) {}
+  constructor(leaves, concat) {
+    this.leaves = leaves;
+    this.concat = concat;
+    this.root = this.buildtree(leaves);
+    this.hash = concat;
+  }
 
   /*
   TODO: 다음의 조건을 만족하는 함수를 만들어주세요.
   - 트리의 루트 노드를 찾아주는 함수입니다.
   */
-  getRoot() {}
+
+  buildtree(leaves) {
+    while (leaves.length > 1) {
+      const tempLeaves = [];
+      for (let i = 0; i < leaves.length; i = i + 2) {
+        if (leaves[i + 1] != null) {
+          tempLeaves.push(this.concat(leaves[i], leaves[i + 1]));
+        } else {
+          tempLeaves.push(leaves[i + 1]);
+        }
+      }
+      leaves = tempLeaves;
+    }
+
+    return leaves[0];
+  }
+
+  getRoot() {
+    return this.root;
+  }
 }
