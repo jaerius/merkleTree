@@ -20,9 +20,22 @@ import MerkleTreeProof from "../src/MerkleTreeProof";
 //   });
 // });
 
-// const {assert} = require("chai");
-// const {hashProof, sha256, concatHash, concatLetters} = require('./testUtil');
-// const MerkleTree = require('../index');
+// const { assert } = require("chai");
+// const { hashProof, sha256, concatHash, concatLetters } = require("./testUtil");
+// const MerkleTree = require("../index");
+const crypto = require("crypto");
+
+function sha256(data) {
+  return crypto.createHash("sha256").update(data).digest("hex");
+}
+
+function concatHash(a, b) {
+  return sha256(a + b); // Concatenates two strings and hashes the result
+}
+
+function concatLetters(a, b) {
+  return a + b;
+}
 
 describe("MerkleTreeProof", () => {
   const leaves = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
@@ -34,21 +47,22 @@ describe("MerkleTreeProof", () => {
   describe("", () => {});
 });
 
-// describe('merkle proof', function() {
-
-//   describe('for each leaf', function() {
+// describe("merkle proof", function () {
+//   describe("for each leaf", function () {
 //     leaves.forEach((leaf, i) => {
-//       it(`should return a proof that calculates the root from leaf ${leaves[i]}`, function() {
+//       it(`should return a proof that calculates the root from leaf ${leaves[i]}`, function () {
 //         const proof = hashTree.getProof(i);
-//         const hashedProof = hashProof(leaf, proof).toString('hex');
-//         if(hashedProof !== root) {
+//         const hashedProof = hashProof(leaf, proof).toString("hex");
+//         if (hashedProof !== root) {
 //           const lettersProof = lettersTree.getProof(i);
 //           console.log(
 //             "The resulting hash of your proof is wrong. \n" +
-//             `We were expecting: ${root} \n` +
-//             `We received: ${hashedProof} \n` +
-//             `In ${leaves.join('')} Merkle tree, the proof of ${leaves[i]} you gave us is: \n` +
-//             `${JSON.stringify(lettersProof, null, 2)}`
+//               `We were expecting: ${root} \n` +
+//               `We received: ${hashedProof} \n` +
+//               `In ${leaves.join("")} Merkle tree, the proof of ${
+//                 leaves[i]
+//               } you gave us is: \n` +
+//               `${JSON.stringify(lettersProof, null, 2)}`
 //           );
 //         }
 //         assert.equal(hashedProof, root);

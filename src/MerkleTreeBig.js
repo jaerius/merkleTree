@@ -1,3 +1,13 @@
+const crypto = require("crypto");
+
+function sha256(data) {
+  return crypto.createHash("sha256").update(data).digest("hex");
+}
+
+function defaultConcat(a, b) {
+  return sha256(a + b);
+}
+
 export default class MerkleTreeBig {
   /*
   TODO: 다음의 조건을 만족하는 생성자를 만들어주세요.
@@ -9,8 +19,8 @@ export default class MerkleTreeBig {
   */
   constructor(leaves, concat) {
     this.leaves = leaves;
-    this.concat = concat;
-    this.root = this.buildtree(leaves);
+    this.concat = concat; //defaultConcat;
+    this.root = this.buildTree(leaves);
     this.hash = concat;
   }
 
@@ -19,20 +29,38 @@ export default class MerkleTreeBig {
   - 트리의 루트 노드를 찾아주는 함수입니다.
   */
 
-  buildtree(leaves) {
-    while (leaves.length > 1) {
-      const tempLeaves = [];
-      for (let i = 0; i < leaves.length; i = i + 2) {
-        if (leaves[i + 1] != null) {
-          tempLeaves.push(this.concat(leaves[i], leaves[i + 1]));
-        } else {
-          tempLeaves.push(leaves[i + 1]);
-        }
-      }
-      leaves = tempLeaves;
+  // buildtree(leaves) {
+  //   while (leaves.length > 1) {
+  //     const tempLeaves = [];
+  //     for (let i = 0; i < leaves.length; i = i + 2) {
+  //       if (leaves[i + 1] != null) {
+  //         tempLeaves.push(this.concat(leaves[i], leaves[i + 1]));
+  //       } else {
+  //         tempLeaves.push(leaves[i + 1]);
+  //       }
+  //     }
+  //     leaves = tempLeaves;
+  //   }
+
+  //   return leaves[0];
+  // }
+
+  buildTree(leaves) {
+    if (leaves.length === 1) {
+      return leaves[0];
     }
 
-    return leaves[0];
+    const nextLevel = [];
+
+    for (let i = 0; i < leaves.length; i += 2) {
+      if (i + 1 < leaves.length) {
+        nextLevel.push(this.concat(leaves[i], leaves[i + 1]));
+      } else {
+        nextLevel.push(leaves[i]);
+      }
+    }
+
+    return this.buildTree(nextLevel);
   }
 
   getRoot() {
